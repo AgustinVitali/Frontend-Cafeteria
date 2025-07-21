@@ -36,37 +36,28 @@ const MenuCard: React.FC<MenuCardProps> = ({
     }
   };
 
+  // Usar imageUrl si existe, si no, usar image (por compatibilidad con backend hardcodeado)
+  const imageSrc = item.imageUrl || (item as any).image;
+
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden ${!item.available ? 'opacity-60' : ''}`}>
-      {item.imageUrl && (
+    <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105 border border-coffee-100 ${!item.available ? 'opacity-60' : ''}`}>
+      {imageSrc && (
         <img 
-          src={item.imageUrl} 
+          src={imageSrc} 
           alt={item.name}
-          className="w-full h-48 object-cover"
+          className="w-full h-56 object-cover object-center rounded-t-2xl"
         />
       )}
-      
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-coffee-800">{item.name}</h3>
-          <span className="text-lg font-bold text-coffee-600">${item.price}</span>
+      <div className="p-6 flex flex-col h-full">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-xl font-bold text-coffee-800">{item.name}</h3>
+          <span className="text-2xl font-extrabold text-coffee-600">${item.price}</span>
         </div>
-        
-        <p className="text-coffee-600 text-sm mb-2">{item.description}</p>
-        
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs bg-coffee-100 text-coffee-800 px-2 py-1 rounded">
-            {item.category}
-          </span>
-          
-          {!item.available && (
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-              No disponible
-            </span>
-          )}
-        </div>
-
-        <div className="flex space-x-2">
+        <span className="inline-block bg-coffee-200 text-coffee-800 text-xs font-semibold px-3 py-1 rounded-full mb-3 self-start">
+          {item.category}
+        </span>
+        <p className="text-coffee-700 text-base mb-4 flex-1">{item.description}</p>
+        <div className="flex space-x-2 mt-auto">
           {adminMode ? (
             <>
               <button
@@ -87,7 +78,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
               <button
                 onClick={handleAddToCart}
                 disabled={!item.available}
-                className={`w-full py-2 px-4 rounded text-sm font-medium ${
+                className={`w-full py-2 px-4 rounded-lg text-base font-semibold shadow transition-all duration-150 ${
                   item.available
                     ? 'bg-coffee-600 hover:bg-coffee-700 text-white'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
