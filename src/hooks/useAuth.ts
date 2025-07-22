@@ -1,10 +1,10 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
-import { User, UserRole } from '../types';
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import { User, UserRole } from "../types";
 
 // Modo de prueba - cambiar para simular diferentes roles
 const TEST_MODE = true;
-const TEST_ROLE: UserRole = 'admin'; // 'admin' | 'barista' | 'cliente'
+const TEST_ROLE: UserRole = "cliente"; // 'admin' | 'barista' | 'cliente'
 
 export const useAuth = () => {
   const {
@@ -13,7 +13,7 @@ export const useAuth = () => {
     isLoading,
     loginWithRedirect,
     logout,
-    getAccessTokenSilently
+    getAccessTokenSilently,
   } = useAuth0();
 
   const [user, setUser] = useState<User | null>(null);
@@ -23,20 +23,20 @@ export const useAuth = () => {
       // En modo de prueba, usar rol fijo
       if (TEST_MODE) {
         setUser({
-          id: auth0User.sub || '',
-          email: auth0User.email || '',
-          name: auth0User.name || '',
-          roles: [TEST_ROLE]
+          id: auth0User.sub || "",
+          email: auth0User.email || "",
+          name: auth0User.name || "",
+          roles: [TEST_ROLE],
         });
       } else {
         // Extraer roles del token o namespace personalizado
-        const roles = auth0User['https://cafeteria.com/roles'] || ['cliente'];
+        const roles = auth0User["https://cafeteria.com/roles"] || ["cliente"];
 
         setUser({
-          id: auth0User.sub || '',
-          email: auth0User.email || '',
-          name: auth0User.name || '',
-          roles: roles
+          id: auth0User.sub || "",
+          email: auth0User.email || "",
+          name: auth0User.name || "",
+          roles: roles,
         });
       }
     } else {
@@ -55,8 +55,8 @@ export const useAuth = () => {
   const handleLogout = () => {
     logout({
       logoutParams: {
-        returnTo: window.location.origin
-      }
+        returnTo: window.location.origin,
+      },
     });
   };
 
@@ -71,6 +71,6 @@ export const useAuth = () => {
     hasRole,
     login,
     logout: handleLogout,
-    getAccessToken
+    getAccessToken,
   };
-}; 
+};

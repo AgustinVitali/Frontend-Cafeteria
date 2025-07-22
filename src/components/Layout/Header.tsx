@@ -1,15 +1,17 @@
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useAuth } from '../../hooks/useAuth';
-import LogoutButton from '../Auth/LogoutButton';
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useAuth } from "../../hooks/useAuth";
+import LogoutButton from "../Auth/LogoutButton";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, hasRole } = useAuth();
   const router = useRouter();
 
   const isActive = (path: string) => {
-    return router.pathname === path ? 'bg-coffee-600 text-white' : 'text-coffee-600 hover:bg-coffee-100';
+    return router.pathname === path
+      ? "bg-coffee-600 text-white"
+      : "text-coffee-600 hover:bg-coffee-100";
   };
 
   return (
@@ -24,33 +26,41 @@ const Header: React.FC = () => {
             <nav className="flex items-center space-x-4">
               <Link
                 href="/menu"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/menu')}`}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(
+                  "/menu"
+                )}`}
               >
                 Menú
               </Link>
 
-              {hasRole('cliente') && (
+              {hasRole("cliente") && (
                 <Link
                   href="/mis-pedidos"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/mis-pedidos')}`}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(
+                    "/mis-pedidos"
+                  )}`}
                 >
                   Mis Pedidos
                 </Link>
               )}
 
-              {hasRole('barista') && (
+              {hasRole("barista") && (
                 <Link
                   href="/pedidos"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/pedidos')}`}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(
+                    "/pedidos"
+                  )}`}
                 >
                   Todos los Pedidos
                 </Link>
               )}
 
-              {hasRole('admin') && (
+              {hasRole("admin") && (
                 <Link
                   href="/admin"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/admin')}`}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(
+                    "/admin"
+                  )}`}
                 >
                   Administración
                 </Link>
@@ -70,4 +80,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header; 
+export default Header;
