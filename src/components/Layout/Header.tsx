@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "../../hooks/useAuth";
 import LogoutButton from "../Auth/LogoutButton";
+import LoginButton from "../Auth/LoginButton";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, hasRole } = useAuth();
@@ -22,7 +23,7 @@ const Header: React.FC = () => {
             ☕ Cafetería Online
           </Link>
 
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <nav className="flex items-center space-x-4">
               <Link
                 href="/menu"
@@ -73,6 +74,10 @@ const Header: React.FC = () => {
                 <LogoutButton />
               </div>
             </nav>
+          ) : (
+            <div className="flex items-center">
+              <LoginButton />
+            </div>
           )}
         </div>
       </div>

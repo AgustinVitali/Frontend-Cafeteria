@@ -84,7 +84,13 @@ const MenuView: React.FC<MenuViewProps> = ({ adminMode = false, onEditItem, onDe
 
     try {
       const token = await getAccessToken();
-      await apiService.createOrder(cart, token);
+      // Transformar los items al formato que espera el backend
+      const backendItems = cart.map(item => ({
+        menuItem: { id: item.menuItemId },
+        quantity: item.quantity,
+        price: item.price
+      }));
+      await apiService.createOrder(backendItems, token);
       setCart([]);
       alert('¡Pedido realizado con éxito!');
     } catch (error) {
@@ -149,9 +155,9 @@ const MenuView: React.FC<MenuViewProps> = ({ adminMode = false, onEditItem, onDe
         </div>
       )}
 
-      {/* Carrito de compras */}
-      {isAuthenticated && hasRole('cliente') && !adminMode && cart.length > 0 && (
-        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-md">
+      {/* Carrito de compras solo para clientes autenticados */}
+      {isAuthenticated && hasRole('cliente') && cart.length > 0 && (
+        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-md z-50">
           <h3 className="text-lg font-semibold text-coffee-800 mb-3">
             Carrito ({cart.length} items)
           </h3>
@@ -184,17 +190,15 @@ const MenuView: React.FC<MenuViewProps> = ({ adminMode = false, onEditItem, onDe
             ))}
           </div>
 
-          <div className="border-t pt-3 mt-3">
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-semibold">Total: ${getTotalPrice().toFixed(2)}</span>
-            </div>
-            <button
-              onClick={placeOrder}
-              className="w-full bg-coffee-600 hover:bg-coffee-700 text-white py-2 px-4 rounded"
-            >
-              Realizar Pedido
-            </button>
+          <div className="flex justify-between items-center mb-3 mt-2">
+            <span className="font-semibold">Total: ${getTotalPrice().toFixed(2)}</span>
           </div>
+          <button
+            onClick={placeOrder}
+            className="w-full bg-coffee-600 hover:bg-coffee-700 text-white py-2 px-4 rounded text-lg font-semibold shadow"
+          >
+            Realizar Pedido
+          </button>
         </div>
       )}
     </div>

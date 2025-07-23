@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { User, UserRole } from "../types";
 
 // Modo de prueba - cambiar para simular diferentes roles
-const TEST_MODE = true;
+const TEST_MODE = false;
 const TEST_ROLE: UserRole = "cliente"; // 'admin' | 'barista' | 'cliente'
 
 export const useAuth = () => {
@@ -20,6 +20,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (isAuthenticated && auth0User) {
+      console.log("auth0User:", auth0User); // <-- Para depuración de roles
       // En modo de prueba, usar rol fijo
       if (TEST_MODE) {
         setUser({
@@ -54,7 +55,11 @@ export const useAuth = () => {
   }, [isAuthenticated, getAccessTokenSilently]);
 
   const hasRole = (role: UserRole): boolean => {
-    return user?.roles.includes(role) || false;
+    return (
+      user?.roles
+        .map(r => r.trim().toLowerCase())
+        .includes(role.toLowerCase()) || false
+    );
   };
 
   const login = () => {

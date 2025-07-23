@@ -36,11 +36,15 @@ class ApiService {
       throw new Error(`Error en la petición: ${response.status}`);
     }
 
+    if (response.status === 204) {
+      return;
+    }
+
     return response.json();
   }
 
   // Métodos para clientes
-  async createOrder(orderItems: OrderItem[], token: string): Promise<Order> {
+  async createOrder(orderItems: any[], token: string): Promise<Order> {
     return this.makeAuthenticatedRequest(
       '/private/orders',
       {

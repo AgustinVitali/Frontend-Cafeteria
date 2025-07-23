@@ -14,7 +14,7 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({ initialData, onSave, onCanc
     price: initialData?.price || 0,
     category: initialData?.category || '',
     available: initialData?.available ?? true,
-    imageUrl: initialData?.imageUrl || ''
+    image: initialData?.image || ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -161,9 +161,9 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({ initialData, onSave, onCanc
         </label>
         <input
           type="url"
-          id="imageUrl"
-          name="imageUrl"
-          value={formData.imageUrl}
+          id="image"
+          name="image"
+          value={formData.image}
           onChange={handleInputChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
           placeholder="https://ejemplo.com/imagen.jpg"

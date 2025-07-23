@@ -5,16 +5,17 @@ export interface MenuItem {
   price: number;
   category: string;
   available: boolean;
-  imageUrl?: string;
+  image?: string;
 }
 
 export interface Order {
   id: string;
   customerId: string;
   customerName: string;
+  userId?: string;
   items: OrderItem[];
   total: number;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled' | string;
   createdAt: string;
   updatedAt: string;
 }

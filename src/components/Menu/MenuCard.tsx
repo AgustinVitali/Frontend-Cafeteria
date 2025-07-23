@@ -36,19 +36,20 @@ const MenuCard: React.FC<MenuCardProps> = ({
     }
   };
 
-  // Usar imageUrl si existe, si no, usar image (por compatibilidad con backend hardcodeado)
-  const imageSrc = item.imageUrl || (item as any).image;
+  // Usar image si existe, si no, usar image (por compatibilidad con backend hardcodeado)
+  const imageSrc = item.image || (item as any).image;
+  const isAvailable = Boolean(item.available);
 
   return (
-    <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105 border border-coffee-100 ${!item.available ? 'opacity-60' : ''}`}>
+    <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105 border border-coffee-100 ${!isAvailable ? 'opacity-60' : ''} h-full min-h-[480px] flex flex-col`}>
       {imageSrc && (
-        <img 
-          src={imageSrc} 
+        <img
+          src={imageSrc}
           alt={item.name}
           className="w-full h-56 object-cover object-center rounded-t-2xl"
         />
       )}
-      <div className="p-6 flex flex-col h-full">
+      <div className="flex flex-col flex-1 p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-xl font-bold text-coffee-800">{item.name}</h3>
           <span className="text-2xl font-extrabold text-coffee-600">${item.price}</span>
@@ -77,14 +78,14 @@ const MenuCard: React.FC<MenuCardProps> = ({
             canOrder && (
               <button
                 onClick={handleAddToCart}
-                disabled={!item.available}
+                disabled={!isAvailable}
                 className={`w-full py-2 px-4 rounded-lg text-base font-semibold shadow transition-all duration-150 ${
-                  item.available
+                  isAvailable
                     ? 'bg-coffee-600 hover:bg-coffee-700 text-white'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                {item.available ? 'Agregar al carrito' : 'No disponible'}
+                {isAvailable ? 'Agregar al carrito' : 'No disponible'}
               </button>
             )
           )}

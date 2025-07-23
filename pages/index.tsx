@@ -1,11 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAuth } from '../src/hooks/useAuth'
 import Header from '../src/components/Layout/Header'
 import MenuView from '../src/components/Menu/MenuView'
 import LoginButton from '../src/components/Auth/LoginButton'
+import { useRouter } from 'next/router'
 
 export default function Home() {
     const { isAuthenticated, isLoading, hasRole } = useAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (hasRole('admin')) {
+                router.push('/admin')
+            } else if (hasRole('barista')) {
+                router.push('/pedidos')
+            } else if (hasRole('cliente')) {
+                router.push('/menu')
+            }
+        }
+    }, [isAuthenticated, hasRole, router])
 
     if (isLoading) {
         return (
@@ -30,12 +44,6 @@ export default function Home() {
                         </h1>
                         <div className="mb-8">
                             <MenuView />
-                        </div>
-                        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-                            <h2 className="text-2xl font-semibold text-coffee-800 mb-4">
-                                Inicia sesión para hacer pedidos
-                            </h2>
-                            <LoginButton />
                         </div>
                     </div>
                 ) : (

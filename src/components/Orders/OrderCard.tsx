@@ -16,9 +16,17 @@ const OrderCard: React.FC<OrderCardProps> = ({
   getStatusText,
   userView = false
 }) => {
+  // Mapeo de status para backend
+  const statusMap: Record<string, string> = {
+    pending: "PENDIENTE",
+    in_progress: "EN_PROGRESO",
+    completed: "COMPLETED",
+    cancelled: "CANCELLED"
+  };
+
   const handleStatusChange = (newStatus: string) => {
     if (onUpdateStatus) {
-      onUpdateStatus(order.id, newStatus);
+      onUpdateStatus(order.id, statusMap[newStatus] || newStatus);
     }
   };
 
@@ -33,34 +41,41 @@ const OrderCard: React.FC<OrderCardProps> = ({
     });
   };
 
+  // Normalizar el estado para que funcione con mayúsculas/minúsculas y español/inglés
+  const normalizedStatus = (() => {
+    if (!order.status) return '';
+    const s = order.status.toLowerCase();
+    if (s === 'pendiente') return 'pending';
+    if (s === 'en_progreso') return 'in_progress';
+    if (s === 'completado' || s === 'completed') return 'completed';
+    if (s === 'cancelado' || s === 'cancelled') return 'cancelled';
+    return s;
+  })();
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-coffee-100 mb-6">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-coffee-800">
+          <h3 className="text-lg font-semibold text-coffee-800 mb-1">
             Pedido #{order.id}
           </h3>
-          {!userView && (
-            <p className="text-sm text-coffee-600">
-              Cliente: {order.customerName}
-            </p>
-          )}
+          <p className="text-sm text-coffee-600 mb-1">
+            <span className="font-semibold">Cliente:</span> {order.customerName || order.userId || "Desconocido"}
+          </p>
           <p className="text-sm text-coffee-600">
-            Fecha: {formatDate(order.createdAt)}
+            <span className="font-semibold">Fecha:</span> {formatDate(order.createdAt)}
           </p>
         </div>
-        
         <div className="text-right">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-            {getStatusText(order.status)}
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(normalizedStatus as Order['status'])} border border-coffee-200`}> 
+            {getStatusText(normalizedStatus as Order['status'])}
           </span>
           <p className="text-lg font-bold text-coffee-800 mt-2">
             Total: ${order.total.toFixed(2)}
           </p>
         </div>
       </div>
-
-      <div className="mb-4">
+      <div className="mb-2">
         <h4 className="font-medium text-coffee-800 mb-2">Productos:</h4>
         <div className="space-y-2">
           {order.items.map(item => (
@@ -79,31 +94,29 @@ const OrderCard: React.FC<OrderCardProps> = ({
           ))}
         </div>
       </div>
-
-      {/* Controles para baristas */}
-      {!userView && order.status !== 'completed' && order.status !== 'cancelled' && (
-        <div className="flex space-x-2">
-          {order.status === 'pending' && (
+      {/* Controles para baristas/admins */}
+      {!userView && normalizedStatus !== 'completed' && normalizedStatus !== 'cancelled' && (
+        <div className="flex space-x-2 mt-4">
+          {normalizedStatus === 'pending' && (
             <>
               <button
                 onClick={() => handleStatusChange('in_progress')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm shadow"
               >
                 Iniciar Preparación
               </button>
               <button
                 onClick={() => handleStatusChange('cancelled')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm shadow"
               >
                 Cancelar
               </button>
             </>
           )}
-          
-          {order.status === 'in_progress' && (
+          {normalizedStatus === 'in_progress' && (
             <button
               onClick={() => handleStatusChange('completed')}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm shadow"
             >
               Marcar como Completado
             </button>
