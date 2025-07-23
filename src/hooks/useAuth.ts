@@ -44,6 +44,15 @@ export const useAuth = () => {
     }
   }, [isAuthenticated, auth0User]);
 
+  useEffect(() => {
+    //Me da el token de Auth0
+    if (isAuthenticated) {
+      getAccessTokenSilently().then((token) => {
+        console.log("JWT de Auth0:", token);
+      });
+    }
+  }, [isAuthenticated, getAccessTokenSilently]);
+
   const hasRole = (role: UserRole): boolean => {
     return user?.roles.includes(role) || false;
   };
