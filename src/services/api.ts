@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '../config/auth0';
-import { MenuItem, Order, OrderItem } from '../types';
+import { MenuItem, Order, OrderItem, User } from '../types';
 
 class ApiService {
   private baseUrl: string;
@@ -108,6 +108,25 @@ class ApiService {
 
   async getFullMenu(token: string): Promise<MenuItem[]> {
     return this.makeAuthenticatedRequest('/private/menu', {}, token);
+  }
+
+  // Métodos para baristas (dummy)
+  async getBaristas(token: string): Promise<User[]> {
+    // Simulación: devolver lista dummy
+    return [
+      { id: '1', email: 'barista1@cafe.com', name: 'Barista Uno', roles: ['barista'] },
+      { id: '2', email: 'barista2@cafe.com', name: 'Barista Dos', roles: ['barista'] },
+    ];
+  }
+
+  async createBarista(email: string, password: string, token: string): Promise<User> {
+    // Simulación: devolver usuario creado
+    return {
+      id: (Math.random() * 100000).toFixed(0),
+      email,
+      name: email.split('@')[0],
+      roles: ['barista'],
+    };
   }
 }
 

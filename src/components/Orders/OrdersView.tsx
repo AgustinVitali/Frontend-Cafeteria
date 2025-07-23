@@ -31,7 +31,8 @@ const OrdersView: React.FC<OrdersViewProps> = ({ userView = false }) => {
       } else {
         ordersList = await apiService.getAllOrders(token);
       }
-      
+      // Ordenar por fecha descendente (más reciente primero)
+      ordersList = ordersList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setOrders(ordersList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar pedidos');

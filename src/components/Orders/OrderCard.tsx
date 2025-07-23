@@ -60,6 +60,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             Pedido #{order.id}
           </h3>
           <p className="text-sm text-coffee-600 mb-1">
+            {/* Si el backend quiere mostrar el correo, debe incluirlo en la respuesta del pedido, por ejemplo como order.customerEmail */}
             <span className="font-semibold">Cliente:</span> {order.customerName || order.userId || "Desconocido"}
           </p>
           <p className="text-sm text-coffee-600">
@@ -81,7 +82,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
           {order.items.map(item => (
             <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-100">
               <div>
-                <span className="font-medium">{item.menuItemName}</span>
+                {/* Si el backend quiere mostrar el nombre, debe incluir menuItem: { name } o menuItemName */}
+                <span className="font-medium">{(item as any).menuItem?.name || item.menuItemName || 'Producto'}</span>
                 <span className="text-sm text-coffee-600 ml-2">x{item.quantity}</span>
                 {item.notes && (
                   <p className="text-xs text-coffee-500 italic">Nota: {item.notes}</p>

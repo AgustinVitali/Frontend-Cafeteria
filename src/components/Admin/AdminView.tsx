@@ -5,13 +5,14 @@ import { MenuItem } from '../../types';
 import MenuView from '../Menu/MenuView';
 import MenuItemForm from './MenuItemForm';
 import OrdersView from '../Orders/OrdersView';
+import BaristasView from './BaristasView';
 
 const AdminView: React.FC = () => {
   const { getAccessToken } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [activeTab, setActiveTab] = useState<'menu' | 'pedidos'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'pedidos' | 'baristas'>('menu');
 
   const handleEditItem = (item: MenuItem) => {
     setEditingItem(item);
@@ -72,10 +73,16 @@ const AdminView: React.FC = () => {
           Menú
         </button>
         <button
-          className={`px-6 py-2 rounded-r-lg font-medium border-t border-r border-b border-coffee-200 focus:outline-none transition-colors ${activeTab === 'pedidos' ? 'bg-coffee-600 text-white' : 'bg-white text-coffee-800 hover:bg-coffee-100'}`}
+          className={`px-6 py-2 font-medium border-t border-b border-coffee-200 focus:outline-none transition-colors ${activeTab === 'pedidos' ? 'bg-coffee-600 text-white' : 'bg-white text-coffee-800 hover:bg-coffee-100'}`}
           onClick={() => setActiveTab('pedidos')}
         >
           Pedidos
+        </button>
+        <button
+          className={`px-6 py-2 rounded-r-lg font-medium border-t border-r border-b border-coffee-200 focus:outline-none transition-colors ${activeTab === 'baristas' ? 'bg-coffee-600 text-white' : 'bg-white text-coffee-800 hover:bg-coffee-100'}`}
+          onClick={() => setActiveTab('baristas')}
+        >
+          Baristas
         </button>
       </div>
 
@@ -121,6 +128,10 @@ const AdminView: React.FC = () => {
         <div>
           <OrdersView />
         </div>
+      )}
+
+      {activeTab === 'baristas' && (
+        <BaristasView />
       )}
     </div>
   );
