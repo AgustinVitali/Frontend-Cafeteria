@@ -18,10 +18,12 @@ export const useAuth = () => {
   } = useAuth0();
 
   const [user, setUser] = useState<User | null>(null);
+  const [synced, setSynced] = useState(false);
 
   useEffect(() => {
     const syncAndSetUser = async () => {
-      if (isAuthenticated && auth0User) {
+      if (isAuthenticated && auth0User && !synced) {
+        setSynced(true);
         try {
           const token = await getAccessTokenSilently();
           await apiService.syncUser(token);
@@ -46,12 +48,13 @@ export const useAuth = () => {
             roles: roles,
           });
         }
-      } else {
+      } else if (!isAuthenticated) {
         setUser(null);
+        setSynced(false);
       }
     };
     syncAndSetUser();
-  }, [isAuthenticated, auth0User, getAccessTokenSilently]);
+  }, [isAuthenticated, auth0User, getAccessTokenSilently, synced]);
 
   useEffect(() => {
     //Me da el token de Auth0
