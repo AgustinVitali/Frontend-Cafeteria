@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { User, UserRole } from "../types";
+import { apiService } from "../services/api";
 
 // Modo de prueba - cambiar para simular diferentes roles
 const TEST_MODE = false;
@@ -19,31 +20,38 @@ export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated && auth0User) {
-      console.log("auth0User:", auth0User); // <-- Para depuración de roles
-      // En modo de prueba, usar rol fijo
-      if (TEST_MODE) {
-        setUser({
-          id: auth0User.sub || "",
-          email: auth0User.email || "",
-          name: auth0User.name || "",
-          roles: [TEST_ROLE],
-        });
+    const syncAndSetUser = async () => {
+      if (isAuthenticated && auth0User) {
+        try {
+          const token = await getAccessTokenSilently();
+          await apiService.syncUser(token);
+        } catch (e) {
+          console.error("Error sincronizando usuario en backend:", e);
+        }
+        // En modo de prueba, usar rol fijo
+        if (TEST_MODE) {
+          setUser({
+            id: auth0User.sub || "",
+            email: auth0User.email || "",
+            name: auth0User.name || "",
+            roles: [TEST_ROLE],
+          });
+        } else {
+          // Extraer roles del token o namespace personalizado
+          const roles = auth0User["https://cafeteria.com/roles"] || ["cliente"];
+          setUser({
+            id: auth0User.sub || "",
+            email: auth0User.email || "",
+            name: auth0User.name || "",
+            roles: roles,
+          });
+        }
       } else {
-        // Extraer roles del token o namespace personalizado
-        const roles = auth0User["https://cafeteria.com/roles"] || ["cliente"];
-
-        setUser({
-          id: auth0User.sub || "",
-          email: auth0User.email || "",
-          name: auth0User.name || "",
-          roles: roles,
-        });
+        setUser(null);
       }
-    } else {
-      setUser(null);
-    }
-  }, [isAuthenticated, auth0User]);
+    };
+    syncAndSetUser();
+  }, [isAuthenticated, auth0User, getAccessTokenSilently]);
 
   useEffect(() => {
     //Me da el token de Auth0
@@ -57,7 +65,7 @@ export const useAuth = () => {
   const hasRole = (role: UserRole): boolean => {
     return (
       user?.roles
-        .map(r => r.trim().toLowerCase())
+        .map((r) => r.trim().toLowerCase())
         .includes(role.toLowerCase()) || false
     );
   };

@@ -1,5 +1,5 @@
-import { API_BASE_URL } from '../config/auth0';
-import { MenuItem, Order, OrderItem, User } from '../types';
+import { API_BASE_URL } from "../config/auth0";
+import { MenuItem, Order, OrderItem, User } from "../types";
 
 class ApiService {
   private baseUrl: string;
@@ -12,7 +12,7 @@ class ApiService {
   async getPublicMenu(): Promise<MenuItem[]> {
     const response = await fetch(`${this.baseUrl}/public/menu`);
     if (!response.ok) {
-      throw new Error('Error al obtener el menú');
+      throw new Error("Error al obtener el menú");
     }
     return response.json();
   }
@@ -27,8 +27,8 @@ class ApiService {
       ...options,
       headers: {
         ...options.headers,
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
 
@@ -46,9 +46,9 @@ class ApiService {
   // Métodos para clientes
   async createOrder(orderItems: any[], token: string): Promise<Order> {
     return this.makeAuthenticatedRequest(
-      '/private/orders',
+      "/private/orders",
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ items: orderItems }),
       },
       token
@@ -56,19 +56,23 @@ class ApiService {
   }
 
   async getMyOrders(token: string): Promise<Order[]> {
-    return this.makeAuthenticatedRequest('/private/orders/my', {}, token);
+    return this.makeAuthenticatedRequest("/private/orders/my", {}, token);
   }
 
   // Métodos para baristas
   async getAllOrders(token: string): Promise<Order[]> {
-    return this.makeAuthenticatedRequest('/private/orders', {}, token);
+    return this.makeAuthenticatedRequest("/private/orders", {}, token);
   }
 
-  async updateOrderStatus(orderId: string, status: string, token: string): Promise<Order> {
+  async updateOrderStatus(
+    orderId: string,
+    status: string,
+    token: string
+  ): Promise<Order> {
     return this.makeAuthenticatedRequest(
       `/private/orders/${orderId}/status`,
       {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ status }),
       },
       token
@@ -76,22 +80,29 @@ class ApiService {
   }
 
   // Métodos para administradores
-  async addMenuItem(menuItem: Omit<MenuItem, 'id'>, token: string): Promise<MenuItem> {
+  async addMenuItem(
+    menuItem: Omit<MenuItem, "id">,
+    token: string
+  ): Promise<MenuItem> {
     return this.makeAuthenticatedRequest(
-      '/private/menu',
+      "/private/menu",
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(menuItem),
       },
       token
     );
   }
 
-  async updateMenuItem(id: string, menuItem: Partial<MenuItem>, token: string): Promise<MenuItem> {
+  async updateMenuItem(
+    id: string,
+    menuItem: Partial<MenuItem>,
+    token: string
+  ): Promise<MenuItem> {
     return this.makeAuthenticatedRequest(
       `/private/menu/${id}`,
       {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(menuItem),
       },
       token
@@ -101,33 +112,51 @@ class ApiService {
   async deleteMenuItem(id: string, token: string): Promise<void> {
     return this.makeAuthenticatedRequest(
       `/private/menu/${id}`,
-      { method: 'DELETE' },
+      { method: "DELETE" },
       token
     );
   }
 
   async getFullMenu(token: string): Promise<MenuItem[]> {
-    return this.makeAuthenticatedRequest('/private/menu', {}, token);
+    return this.makeAuthenticatedRequest("/private/menu", {}, token);
   }
 
   // Métodos para baristas (dummy)
   async getBaristas(token: string): Promise<User[]> {
     // Simulación: devolver lista dummy
     return [
-      { id: '1', email: 'barista1@cafe.com', name: 'Barista Uno', roles: ['barista'] },
-      { id: '2', email: 'barista2@cafe.com', name: 'Barista Dos', roles: ['barista'] },
+      {
+        id: "1",
+        email: "barista1@cafe.com",
+        name: "Barista Uno",
+        roles: ["barista"],
+      },
+      {
+        id: "2",
+        email: "barista2@cafe.com",
+        name: "Barista Dos",
+        roles: ["barista"],
+      },
     ];
   }
 
-  async createBarista(email: string, password: string, token: string): Promise<User> {
+  async createBarista(
+    email: string,
+    password: string,
+    token: string
+  ): Promise<User> {
     // Simulación: devolver usuario creado
     return {
       id: (Math.random() * 100000).toFixed(0),
       email,
-      name: email.split('@')[0],
-      roles: ['barista'],
+      name: email.split("@")[0],
+      roles: ["barista"],
     };
+  }
+
+  async syncUser(token: string): Promise<void> {
+    await this.makeAuthenticatedRequest("/api/me", {}, token);
   }
 }
 
-export const apiService = new ApiService(); 
+export const apiService = new ApiService();
