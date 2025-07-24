@@ -110,23 +110,20 @@ class ApiService {
     return this.makeAuthenticatedRequest('/private/menu', {}, token);
   }
 
-  // Métodos para baristas (dummy)
+  // Métodos para baristas
   async getBaristas(token: string): Promise<User[]> {
-    // Simulación: devolver lista dummy
-    return [
-      { id: '1', email: 'barista1@cafe.com', name: 'Barista Uno', roles: ['barista'] },
-      { id: '2', email: 'barista2@cafe.com', name: 'Barista Dos', roles: ['barista'] },
-    ];
+    return this.makeAuthenticatedRequest('/private/users?role=barista', {}, token);
   }
 
   async createBarista(email: string, password: string, token: string): Promise<User> {
-    // Simulación: devolver usuario creado
-    return {
-      id: (Math.random() * 100000).toFixed(0),
-      email,
-      name: email.split('@')[0],
-      roles: ['barista'],
-    };
+    return this.makeAuthenticatedRequest(
+      '/private/users',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      },
+      token
+    );
   }
 }
 

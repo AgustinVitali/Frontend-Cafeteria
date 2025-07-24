@@ -13,6 +13,7 @@ export interface Order {
   customerId: string;
   customerName: string;
   userId?: string;
+  customerEmail?: string;
   items: OrderItem[];
   total: number;
   status: 'pending' | 'in_progress' | 'completed' | 'cancelled' | string;
