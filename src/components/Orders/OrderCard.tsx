@@ -60,8 +60,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             Pedido #{order.id}
           </h3>
           <p className="text-sm text-coffee-600 mb-1">
-            {/* Si el backend quiere mostrar el correo, debe incluirlo en la respuesta del pedido, por ejemplo como order.customerEmail */}
-            <span className="font-semibold">Cliente:</span> {order.customerName || order.userId || "Desconocido"}
+            <span className="font-semibold">Cliente:</span> {order.customerEmail || order.customerName || order.userId || "Desconocido"}
           </p>
           <p className="text-sm text-coffee-600">
             <span className="font-semibold">Fecha:</span> {formatDate(order.createdAt)}
